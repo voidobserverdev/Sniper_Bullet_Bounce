@@ -9,6 +9,10 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private int maxAmmo;
     [SerializeField] private InputAction fireAction;
+
+    [Header("Aiming")]
+    [SerializeField] private float rotationSpeed = 150f;
+    [SerializeField] private InputAction aimAction;
     private int currentAmmo;
 
     public static Action<int> OnAmmoChanged;
@@ -17,10 +21,12 @@ public class Player : MonoBehaviour
     void OnEnable()
     {
         fireAction.Enable();
+        aimAction.Enable();
     }
 
     void OnDisable()
     {
+        aimAction.Disable();
         fireAction.Disable();
     }
 
@@ -42,6 +48,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        HandleAim();
         if (GameManager.Instance.CurrentState == GameState.Aiming)
         {
             if (fireAction.WasPressedThisFrame())
@@ -71,5 +78,13 @@ public class Player : MonoBehaviour
     {
         bullet.SetActive(false);
         bulletPool.Enqueue(bullet);
+    }
+
+    void HandleAim()
+    {
+        float aimInput = aimAction.ReadValue<float>();
+        float zRotation = -aimInput * rotationSpeed * Time.deltaTime;
+
+        transform.Rotate(Vector3.forward, zRotation);
     }
 }

@@ -30,6 +30,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        CurrentState = GameState.Aiming;
+    }
+
     public void ChangeState(GameState newState)
     {
         CurrentState = newState;
